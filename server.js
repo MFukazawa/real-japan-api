@@ -8,8 +8,12 @@ app.use(cors());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
+const testObject = {
+  "one": "one"
+}
+
 app.get('/', (req, res) => {
-  res.send('root get')
+  res.json('testing')
 })
 
 app.post('/register', (req, res) => {
