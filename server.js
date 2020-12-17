@@ -1,13 +1,15 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 9027;
 const cors = require('cors');
 const register = require('./controllers/register');
 
 app.use(cors());
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('this is working')
+  res.send('root get')
 })
 
 app.post('/register', (req, res) => {
