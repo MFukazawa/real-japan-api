@@ -1,5 +1,5 @@
 const handleRegister = (req, res) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   const usersTable = {
     users: [
@@ -14,13 +14,14 @@ const handleRegister = (req, res) => {
     ]
   }
 
-  if (!email) {
-    return res.status(400).json('Email required');
+  if (!email || !password) {
+    return res.status(400).json('Email and password required');
   };
 
   usersTable.users.push({
     id: '1',
-    email: email
+    email: email,
+    password: password
   });
 
   console.log(usersTable);
