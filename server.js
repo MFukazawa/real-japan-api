@@ -7,7 +7,7 @@ const saltRounds = 10;
 const myPlaintextPassword = 's0/\/\P4$$w0rD';
 const someOtherPlaintextPassword = 'not_bacon';
 const register = require('./controllers/register');
-const signin = require('./controllers/signin');
+const login = require('./controllers/login');
 
 app.use(cors());
 app.use(express.urlencoded({extended: false}));
@@ -61,14 +61,14 @@ app.post('/register', (req, res) => {
   // register.handleRegister(req, res)
 })
 
-app.post('/signin', (req, res) => {
+app.post('/login', (req, res) => {
   if (req.body.email === database.users[0].email
     && req.body.password === database.users[0].password) {
       res.json('success')
   } else {
     res.status(400).json('error logging in')
   }
-  // signin.handleSignIn(req, res)
+  // login.handleLogin(req, res)
 })
 
 app.listen(port, () => {
