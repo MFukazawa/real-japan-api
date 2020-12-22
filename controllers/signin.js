@@ -4,6 +4,8 @@ const handleSignIn = (req, res, bcrypt) => {
   if (!email || !password) {
     return res.status(400).json('Login incorrect')
   }
+
+  res.json('this is signin')
 }
 
 module.exports = {
