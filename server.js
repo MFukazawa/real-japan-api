@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const port = 9027;
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+const myPlaintextPassword = 's0/\/\P4$$w0rD';
+const someOtherPlaintextPassword = 'not_bacon';
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 
@@ -41,13 +45,19 @@ app.get('/', (req, res) => {
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
-    database.users.push({
-      id: '999',
-      email: email,
-      password: password,
-      joined: new Date()
-    })
-    res.json(database.users[database.users.length - 1])
+
+  bcrypt.hash(password, saltRounds, function(err, hash) {
+    console.log(hash);
+  });
+
+  database.users.push({
+    id: '999',
+    email: email,
+    password: password,
+    joined: new Date()
+  })
+
+  res.json(database.users[database.users.length - 1])
   // register.handleRegister(req, res)
 })
 
