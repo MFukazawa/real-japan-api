@@ -6,6 +6,21 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const myPlaintextPassword = 's0/\/\P4$$w0rD';
 const someOtherPlaintextPassword = 'not_bacon';
+
+const knex = require('knex')
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'micah',
+    password: '',
+    database: 'real-japan-db'
+  }
+})
+
+db.select('*').from('users').then(console.log);
+
 const register = require('./controllers/register');
 const login = require('./controllers/login');
 
@@ -50,12 +65,17 @@ app.post('/register', (req, res) => {
     console.log(hash);
   });
 
-  database.users.push({
-    id: '999',
+  db('users').insert({
     email: email,
-    password: password,
     joined: new Date()
-  })
+  }).then(console.log)
+
+  // database.users.push({
+  //   id: '999',
+  //   email: email,
+  //   password: password,
+  //   joined: new Date()
+  // })
 
   res.json(database.users[database.users.length - 1])
   // register.handleRegister(req, res)
