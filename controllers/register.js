@@ -24,7 +24,7 @@ const handleRegister = (req, res) => {
     password: password
   });
 
-  console.log(usersTable);
+  // console.log(usersTable);
 
   res.json(usersTable.users[usersTable.users.length - 1]);
 
