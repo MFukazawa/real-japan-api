@@ -1,32 +1,40 @@
-const handleRegister = (req, res) => {
+const handleRegister = (req, res, db, bcrypt) => {
   const { email, password } = req.body;
 
-  const usersTable = {
-    users: [
-      {
-        id: '123',
-        email: 'abc@gmail.com'
-      },
-      {
-        id: '456',
-        email: 'def@gmail.com'
-      }
-    ]
+  if (!email || !password) {
+    return res.status(400).json('Incorrect form submission')
   }
 
-  if (!email || !password) {
-    return res.status(400).json('Email and password required');
-  };
+  async function hashPassword(password) {
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(password, saltRounds)
+    return hash
+  }
 
-  usersTable.users.push({
-    id: '1',
-    email: email,
-    password: password
-  });
+  const hashedPassword = hashPassword(password);
 
-  // console.log(usersTable);
-
-  res.json(usersTable.users[usersTable.users.length - 1]);
+  db.transaction(trx => {
+    trx.insert({
+      hash: hashedPassword,
+      email: email
+    })
+    .into('login')
+    .returning('email')
+    .then(loginEmail => {
+      return trx('users')
+        .returning('*')
+        .insert({
+          email: loginEmail[0],
+          joined: new Date()
+        })
+        .then(user => {
+          res.json(user[0])
+        })
+    })
+    .then(trx.commit)
+    .catch(trx.rollback)
+  })
+  .catch(err => res.status(400).json(err))
 
   // Users Table
   // generate ID here ???

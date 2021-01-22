@@ -58,47 +58,7 @@ app.get('/', (req, res) => {
   res.json(database.users)
 })
 
-app.post('/register', (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json('Incorrect form submission')
-  }
-
-  async function hashPassword(password) {
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds)
-    return hash
-  }
-
-  const hashedPassword = hashPassword(password);
-
-  const hash = bcrypt.hashSync(password, 10);
-  db.transaction(trx => {
-    trx.insert({
-      hash: hashedPassword,
-      email: email
-    })
-    .into('login')
-    .returning('email')
-    .then(loginEmail => {
-      return trx('users')
-        .returning('*')
-        .insert({
-          email: loginEmail[0],
-          joined: new Date()
-        })
-        .then(user => {
-          res.json(user[0])
-        })
-    })
-    .then(trx.commit)
-    .catch(trx.rollback)
-  })
-  .catch(err => res.status(400).json(err))
-
-  // register.handleRegister(req, res)
-})
+app.post('/register', (req, res) => { register.handleRegister(req, res, db , bcrypt) })
 
 app.post('/login', (req, res) => {
   if (req.body.email === database.users[0].email
