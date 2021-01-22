@@ -3,11 +3,10 @@ const app = express();
 const port = 9027;
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
-
 const knex = require('knex')
+
+const register = require('./controllers/register');
+const login = require('./controllers/login');
 
 const db = knex({
   client: 'pg',
@@ -18,11 +17,6 @@ const db = knex({
     database: 'real-japan-db'
   }
 })
-
-db.select('*').from('users').then(console.log);
-
-const register = require('./controllers/register');
-const login = require('./controllers/login');
 
 app.use(cors());
 app.use(express.urlencoded({extended: false}));
@@ -61,12 +55,17 @@ app.get('/', (req, res) => {
 app.post('/register', (req, res) => { register.handleRegister(req, res, db , bcrypt) })
 
 app.post('/login', (req, res) => {
-  if (req.body.email === database.users[0].email
-    && req.body.password === database.users[0].password) {
-      res.json(database.users[0])
-  } else {
-    res.status(400).json('error logging in')
-  }
+  db.select('email', 'hash').from('login')
+    .then(data => {
+      console.log(data);
+    })
+
+  // if (req.body.email === database.users[0].email
+  //   && req.body.password === database.users[0].password) {
+  //     res.json(database.users[0])
+  // } else {
+  //   res.status(400).json('error logging in')
+  // }
   // login.handleLogin(req, res)
 })
 

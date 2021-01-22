@@ -5,13 +5,21 @@ const handleRegister = (req, res, db, bcrypt) => {
     return res.status(400).json('Incorrect form submission')
   }
 
-  async function hashPassword(password) {
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds)
-    return hash
-  }
+  // async function hashPassword(password) {
+  //   const saltRounds = 10;
+  //   const hash = await bcrypt.hash(password, saltRounds, function(err, hash) {
+  //     if (err) {
+  //       throw err
+  //     } else {
+  //       return hash
+  //     }
+  //   })
+  //   return hash
+  // }
 
-  const hashedPassword = hashPassword(password);
+  // const hashedPassword = hashPassword(password);
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   db.transaction(trx => {
     trx.insert({
