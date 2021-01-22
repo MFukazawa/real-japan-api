@@ -65,18 +65,18 @@ app.post('/register', (req, res) => {
     return res.status(400).json('Incorrect form submission')
   }
 
-  // async function hashPassword(password) {
-  //   const saltRounds = 10;
-  //   const hashedPassword = await bcrypt.hash(password, saltRounds)
-  //   return hashedPassword
-  // }
+  async function hashPassword(password) {
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(password, saltRounds)
+    return hash
+  }
 
-  // const hasher = hashPassword(password);
+  const hashedPassword = hashPassword(password);
 
   const hash = bcrypt.hashSync(password, 10);
   db.transaction(trx => {
     trx.insert({
-      hash: hash,
+      hash: hashedPassword,
       email: email
     })
     .into('login')
