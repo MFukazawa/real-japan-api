@@ -54,20 +54,7 @@ app.get('/', (req, res) => {
 
 app.post('/register', (req, res) => { register.handleRegister(req, res, db , bcrypt) })
 
-app.post('/login', (req, res) => {
-  db.select('email', 'hash').from('login')
-    .then(data => {
-      console.log(data);
-    })
-
-  // if (req.body.email === database.users[0].email
-  //   && req.body.password === database.users[0].password) {
-  //     res.json(database.users[0])
-  // } else {
-  //   res.status(400).json('error logging in')
-  // }
-  // login.handleLogin(req, res)
-})
+app.post('/login', login.handleLogin(db, bcrypt))
 
 app.listen(port, () => {
   console.log(`app is running on port ${port}`);
