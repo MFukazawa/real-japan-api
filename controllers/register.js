@@ -5,20 +5,6 @@ const handleRegister = (req, res, db, bcrypt) => {
     return res.status(400).json('Incorrect form submission')
   }
 
-  // async function hashPassword(password) {
-  //   const saltRounds = 10;
-  //   const hash = await bcrypt.hash(password, saltRounds, function(err, hash) {
-  //     if (err) {
-  //       throw err
-  //     } else {
-  //       return hash
-  //     }
-  //   })
-  //   return hash
-  // }
-
-  // const hashedPassword = hashPassword(password);
-
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   db.transaction(trx => {
@@ -27,10 +13,7 @@ const handleRegister = (req, res, db, bcrypt) => {
       email: email
     })
     .into('login')
-    // returning('id')
     .returning('email')
-    //.then(loginId)
-    // insert - id: loginId
     .then(loginEmail => {
       return trx('users')
         .returning('*')
@@ -46,10 +29,6 @@ const handleRegister = (req, res, db, bcrypt) => {
     .catch(trx.rollback)
   })
   .catch(err => res.status(400).json(err))
-
-  // Users Table
-  // generate ID here ???
-  // insert ID + email
 
   // Search History Table
   /*
